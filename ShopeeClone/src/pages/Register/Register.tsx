@@ -1,13 +1,16 @@
 import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { getRules } from 'src/utils/rules'
+import { getRules, schema, Schema } from 'src/utils/rules'
 import Input from 'src/components/Input'
+import { yupResolver } from '@hookform/resolvers/yup'
 
-interface FormData {
-  email: string
-  password: string
-  confirm_password: string
-}
+// interface FormData {
+//   email: string
+//   password: string
+//   confirm_password: string
+// }
+
+type FormData = Schema
 
 export default function Register() {
   const {
@@ -15,11 +18,13 @@ export default function Register() {
     handleSubmit,
     getValues,
     formState: { errors }
-  } = useForm<FormData>()
+  } = useForm<FormData>({
+    resolver: yupResolver(schema)
+  })
 
   // case không truyền gì vào getRules():  const rules = getRules()
   // case truyền getValues vào getRules()
-  const rules = getRules(getValues)
+  // const rules = getRules(getValues)
 
   const onSubmit = handleSubmit(
     (data) => {
@@ -44,10 +49,10 @@ export default function Register() {
                 type='email'
                 placeholder='Email'
                 name='email'
-                rules={rules.email}
                 register={register}
                 errorMessage={errors.email?.message}
                 autoComplete='on'
+                // rules={rules.email}
               />
 
               <Input
@@ -55,10 +60,10 @@ export default function Register() {
                 type='password'
                 placeholder='Password'
                 name='password'
-                rules={rules.password}
                 register={register}
                 errorMessage={errors.password?.message}
                 autoComplete='on'
+                // rules={rules.password}
               />
 
               <Input
@@ -66,10 +71,10 @@ export default function Register() {
                 type='password'
                 placeholder='Confirm Password'
                 name='confirm_password'
-                rules={rules.confirm_password}
                 register={register}
                 errorMessage={errors.confirm_password?.message}
                 autoComplete='on'
+                // rules={rules.confirm_password}
               />
 
               <div className='mt-2'>
