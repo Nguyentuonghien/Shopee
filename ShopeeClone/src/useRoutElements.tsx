@@ -3,12 +3,18 @@ import ProductList from './pages/ProductList'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import RegisterLayout from './layouts/RegisterLayout'
+import MainLayout from './layouts/MainLayout'
 
 export default function useRoutElements() {
   const routeElemets = useRoutes([
     {
+      // Main Layout
       path: '/',
-      element: <ProductList />
+      element: (
+        <MainLayout>
+          <ProductList />
+        </MainLayout>
+      )
     },
     {
       // Login, Register cùng thuộc RegisterLayout
