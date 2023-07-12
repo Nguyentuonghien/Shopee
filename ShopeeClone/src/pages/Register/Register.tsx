@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { getRules, schema, Schema } from 'src/utils/rules'
 import Input from 'src/components/Input'
@@ -7,11 +7,17 @@ import { useMutation } from '@tanstack/react-query'
 import { registerAccount } from 'src/api/auth.api'
 import { omit } from 'lodash'
 import { isAxiosUnprocessableEntityError } from 'src/utils/errors'
-import { ResponseApi } from 'src/types/utils.type'
+import { ErrorResponseApi } from 'src/types/utils.type'
+import { useContext } from 'react'
+import { AppContext } from 'src/contexts/app.context'
+import Button from 'src/components/Button'
 
 type FormData = Schema
 
 export default function Register() {
+  const { setProfile, setIsAuthenticated } = useContext(AppContext)
+  const navigate = useNavigate()
+
   const {
     register,
     handleSubmit,
@@ -35,12 +41,15 @@ export default function Register() {
     const body = omit(data, ['confirm_password'])
     registerAccountMutation.mutate(body, {
       onSuccess: (data) => {
-        console.log('data trả về: ', data)
+        // console.log('data trả về: ', data)
+        setIsAuthenticated(true)
+        setProfile(data.data.data.user)
+        navigate('/')
       },
       onError: (error) => {
         // nếu là lỗi 422, formError(không undefied) có email, password
         // lấy giá trị error trong reresponse ứng vs email, password hiển thị lỗi trên form
-        if (isAxiosUnprocessableEntityError<ResponseApi<Omit<FormData, 'confirm_password'>>>(error)) {
+        if (isAxiosUnprocessableEntityError<ErrorResponseApi<Omit<FormData, 'confirm_password'>>>(error)) {
           const formError = error.response?.data.data
 
           // cách 1: dùng vòng lặp Object qua key -> gọn hơn cách 2
@@ -113,12 +122,15 @@ export default function Register() {
               />
 
               <div className='mt-2'>
-                <button
+                <Button
+                  isLoading={registerAccountMutation.isLoading}
+                  // khi đang register -> button sẽ bị disabled và không spam ấn được
+                  disabled={registerAccountMutation.isLoading}
                   className='flex w-full items-center justify-center bg-red-500 px-2 py-4 text-sm uppercase text-white hover:bg-red-600'
                   type='submit'
                 >
                   Đăng Ký
-                </button>
+                </Button>
               </div>
               <div className='mt-8'>
                 <div className='flex items-center justify-center'>
