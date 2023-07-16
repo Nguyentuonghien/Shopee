@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { schema, Schema } from 'src/utils/rules'
 import { useMutation } from '@tanstack/react-query'
-import { loginAccount } from 'src/api/auth.api'
+import authApi from 'src/api/auth.api'
 import { isAxiosUnprocessableEntityError } from 'src/utils/errors'
 import { ErrorResponseApi } from 'src/types/utils.type'
 import Input from 'src/components/Input'
@@ -30,7 +30,7 @@ export default function Login() {
   const navigate = useNavigate()
 
   const loginAccountMutation = useMutation({
-    mutationFn: (body: Omit<FormData, 'confirm_password'>) => loginAccount(body)
+    mutationFn: (body: Omit<FormData, 'confirm_password'>) => authApi.loginAccount(body)
   })
 
   const onSubmit = handleSubmit((data) => {

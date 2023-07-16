@@ -4,6 +4,6 @@ const constPath = {
   login: '/login',
   register: '/register',
   logout: '/logout'
-}
+} as const
 
 export default constPath
