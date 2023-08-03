@@ -1,5 +1,4 @@
 import Button from 'src/components/Button'
-import { QueryConfig } from '../ProductList'
 import { sortBy, order as orderConstant } from 'src/constants/product'
 import classNames from 'classnames'
 import { ProductListConfig } from 'src/types/product.type'
@@ -7,6 +6,7 @@ import { useNavigate } from 'react-router'
 import constPath from 'src/constants/path'
 import { Link, createSearchParams } from 'react-router-dom'
 import { omit } from 'lodash'
+import { QueryConfig } from 'src/hooks/useQueryConfig'
 
 interface Props {
   queryConfig: QueryConfig

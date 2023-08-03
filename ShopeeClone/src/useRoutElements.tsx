@@ -8,6 +8,7 @@ import Profile from './pages/Profile'
 import { useContext } from 'react'
 import { AppContext } from './contexts/app.context'
 import constPath from './constants/path'
+import ProductDetail from './pages/ProductDetail'
 
 // những route nào truy cập vào đây nếu đã login(isAuthenticated=true) -> cho tiếp tục vào <Outlet />
 // còn không thì sẽ <Navigate /> về trang Login
@@ -62,6 +63,15 @@ export default function useRoutElements() {
           )
         }
       ]
+    },
+    {
+      path: constPath.productDetail,
+      index: true,
+      element: (
+        <MainLayout>
+          <ProductDetail />
+        </MainLayout>
+      )
     },
     {
       path: '',

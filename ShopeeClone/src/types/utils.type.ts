@@ -1,5 +1,3 @@
-import { type } from 'os'
-
 export interface ErrorResponseApi<Data> {
   message: string
   data?: Data

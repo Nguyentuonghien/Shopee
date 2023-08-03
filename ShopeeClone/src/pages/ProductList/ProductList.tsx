@@ -3,46 +3,23 @@ import AsideFilter from './AsideFilter'
 import Products from './Products'
 import SortProductList from './SortProductList'
 import { useQuery } from '@tanstack/react-query'
-import useQueryParams from 'src/hooks/useQueryParams'
 import Pagination from 'src/components/Pagination'
-import { useState } from 'react'
 import { ProductListConfig } from 'src/types/product.type'
-import { omitBy, isUndefined } from 'lodash'
 import categoryApi from 'src/api/category.api'
-
-export type QueryConfig = {
-  [key in keyof ProductListConfig]: string
-}
+import useQueryConfig from 'src/hooks/useQueryConfig'
 
 export default function ProductList() {
-  const queryParams: QueryConfig = useQueryParams()
-  // const [page, setPage] = useState(1)
-
-  // object chỉ lấy những query đúng và cần thiết, loại bỏ đi giá trị undefined
-  const queryConfig: QueryConfig = omitBy(
-    {
-      page: queryParams.page || '1',
-      limit: queryParams.limit || '20',
-      sort_by: queryParams.sort_by,
-      exclude: queryParams.exclude,
-      name: queryParams.name,
-      order: queryParams.order,
-      price_max: queryParams.price_max,
-      price_min: queryParams.price_min,
-      rating_filter: queryParams.rating_filter,
-      category: queryParams.category
-    },
-    isUndefined
-  )
+  const queryConfig = useQueryConfig() // sử dụng hook useQueryConfig() đã được custom
 
   const { data: productsData } = useQuery({
     queryKey: ['products', queryConfig],
     queryFn: () => {
       return productApi.getProducts(queryConfig as ProductListConfig)
     },
-    keepPreviousData: true // chuyển trang
+    keepPreviousData: true, // chuyển trang
+    staleTime: 3 * 60 * 1000
   })
-  console.log('productsData: ', productsData)
+  // console.log('productsData: ', productsData)
 
   const { data: categoriesData } = useQuery({
     queryKey: ['categories'],
@@ -50,7 +27,7 @@ export default function ProductList() {
       return categoryApi.getCategories()
     }
   })
-  console.log('categoriesData: ', categoriesData)
+  // console.log('categoriesData: ', categoriesData)
 
   return (
     <div className='bg-gray-200 py-6'>
@@ -62,8 +39,8 @@ export default function ProductList() {
             </div>
             <div className='col-span-9'>
               <SortProductList queryConfig={queryConfig} pageSize={productsData.data.data.pagination.page_size} />
+              {/* generic 30 products */}
               <div className='mt-6 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'>
-                {/* generic 30 products */}
                 {productsData?.data.data.products.map((product) => (
                   <div className='col-span-1' key={product._id}>
                     <Products product={product} />
